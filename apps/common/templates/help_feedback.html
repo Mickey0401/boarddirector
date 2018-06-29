@@ -1,0 +1,68 @@
+{% extends "inner.html" %}
+{% load i18n static user_tags common_tags permissions_tags compress %}
+
+{% block base_resources %}
+  <link rel="stylesheet" href="{% static 'css.generated/base.css' %}"/>
+  <script src="{% static 'js/libs/jquery-1.12.4/jquery.min.js' %}"></script>
+  <script src="{% static 'js/libs/bootstrap/js/bootstrap.min.js' %}"></script>
+{% endblock %}
+
+{% block extra_js %}{% endblock extra_js %}
+
+{% block extra_css %}{{ super }}{% endblock extra_css %}
+
+{% block article_class %}{% endblock article_class %}
+
+{% block workspace %}
+
+<header class="heading">
+  <div class="holder">
+    <h2>Help &amp; Feedback </h2>
+  </div>
+</header>
+
+<div style='padding: 2em; margin: 1em; background-color:#fcfcfc; border: 1px solid #d9d9d9; border-radius: 5px;'>
+    <div id="zsfeedbackwidgetdiv"></div>
+</div>
+  <script type="text/javascript">
+  var zsFeedbackTabPref = zsFeedbackTabPref || {};
+  zsFeedbackTabPref.display = "embeded";
+  zsFeedbackTabPref.fbURL = "https://desk.zoho.com/support/fbw?formType=AdvancedWebForm&fbwId=a26a285e1775d5dea9a61ecd26b932a6afb6719abeecaa48&xnQsjsdp=EP9GsP4hzYFx6ffOy*amAQ$$&mode=showWidget&displayType=embeded";
+  zsFeedbackTabPref.srcDiv = "zsfeedbackwidgetdiv";
+  zsFeedbackTabPref.jsStaticUrl = "https://js.zohostatic.com/support/fbw_v8/js";
+  zsFeedbackTabPref.cssStaticUrl = "https://css.zohostatic.com/support/fbw_v8/css";
+
+  var feedbackInitJs = document.createElement("script");
+  feedbackInitJs.type = "text/javascript";
+  feedbackInitJs.src = "https://js.zohostatic.com/support/fbw_v8/js/zsfeedbackinit.js";
+  window.jQueryAndEncoderUrl = "https://js.zohostatic.com/support/app/js/jqueryandencoder.ffa5afd5124fbedceea9.js";
+  window.loadingGifUrl = "https://img.zohostatic.com/support/app/images/loading.8f4d3630919d2f98bb85.gif";
+  document.head.appendChild(feedbackInitJs);
+  </script>
+
+  <script>
+    {% if user and current_membership %}
+    var user_email = "{{ user.email }}";
+    var user_name = "{{ current_membership.get_full_name }} - {{ current_membership.account.name }}";
+    {% elif user %}
+    var user_email = "{{ user.email }}";
+    var user_name = "{{ user.email }}";
+    {% else %}
+    var user_email = "";
+    var user_name = "";
+    {% endif %}
+
+    // ZoHo does not like special symbols? ^(O_O)^
+    user_name = user_name.replace('/[@\.A-Za-z\s0-9_\-]/g', '');
+
+    setTimeout(function(){
+      $('#zsfeedbackwidgetdiv #feedbNameTxtField').val(user_name);
+      $('#zsfeedbackwidgetdiv #feedbEmailTxtField').val(user_email);
+    }, 5000);
+
+  </script>
+
+</div>
+</div>
+
+{% endblock workspace %}

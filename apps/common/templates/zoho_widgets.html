@@ -1,0 +1,82 @@
+{% if zoho_salesiq_widget %}
+<script type="text/javascript">
+  var $zoho = $zoho || {};
+  $zoho.salesiq = $zoho.salesiq || { 
+    widgetcode: "{{ zoho_salesiq_widget }}",
+    {% if user and current_membership %}
+    values: {email: "{{ user.email }}", name: "{{ current_membership.get_full_name }} ({{ current_membership.account.name }})"},
+    {% elif user %}
+    values: {email: "{{ user.email }}", name: "" },
+    {% else %}
+    values: {},
+    {% endif %}
+    ready: function () {}
+  };
+  var d = document;
+  s = d.createElement("script");
+  s.type = "text/javascript";
+  s.id = "zsiqscript";
+  s.defer = true;
+  s.src = "https://salesiq.zoho.com/widget";
+  t = d.getElementsByTagName("script")[0];
+  t.parentNode.insertBefore(s, t);
+  d.write("<div id='zsiqwidget'></div>");
+</script>
+{% elif zoho_desk_widget %}
+<script type="text/javascript">
+
+    if (typeof zsFeedbackTabPref === "undefined"){
+
+        var zsFeedbackTabPref = {};
+        zsFeedbackTabPref.tabTitle = "Feedback";
+        zsFeedbackTabPref.tabColor = "#808080";
+        zsFeedbackTabPref.tabFontColor = "#FFFFFF";
+        zsFeedbackTabPref.tabPosition = "Right";
+        zsFeedbackTabPref.tabOffset = "600";
+        zsFeedbackTabPref.display = "popout";
+        zsFeedbackTabPref.srcDiv = "zsfeedbackwidgetdiv";
+        zsFeedbackTabPref.defaultDomain = "https://desk.zoho.com";
+        zsFeedbackTabPref.feedbackId = "a26a285e1775d5dea9a61ecd26b932a6afb6719abeecaa48";
+        zsFeedbackTabPref.fbURL = "https://desk.zoho.com/support/fbw?formType=AdvancedWebForm&fbwId=a26a285e1775d5dea9a61ecd26b932a6afb6719abeecaa48&xnQsjsdp=EP9GsP4hzYFx6ffOy*amAQ$$&mode=showWidget&displayType=popout";
+        zsFeedbackTabPref.jsStaticUrl = "https://js.zohostatic.com/support/fbw_v8/js";
+        zsFeedbackTabPref.cssStaticUrl = "https://css.zohostatic.com/support/fbw_v8/css";
+        
+        var feedbackInitJs = document.createElement("script");
+        feedbackInitJs.type = "text/javascript";
+        feedbackInitJs.src = "https://js.zohostatic.com/support/fbw_v8/js/zsfeedbackinit.js";
+        window.jQueryAndEncoderUrl = "https://js.zohostatic.com/support/app/js/jqueryandencoder.ffa5afd5124fbedceea9.js";
+        window.loadingGifUrl = "https://img.zohostatic.com/support/app/images/loading.8f4d3630919d2f98bb85.gif";
+        document.head.appendChild(feedbackInitJs);
+        var feedbackWidgetCss = document.createElement("link");
+        feedbackWidgetCss.setAttribute("rel", "stylesheet");
+        feedbackWidgetCss.setAttribute("type", "text/css");
+        feedbackWidgetCss.setAttribute("href", "https://css.zohostatic.com/support/app/css/ZSFeedbackPopup.40fce22de60367cedd8b.css");
+        document.head.appendChild(feedbackWidgetCss);
+
+        //
+        {% if user and current_membership %}
+        var user_email = "{{ user.email }}";
+        var user_name = "{{ current_membership.get_full_name }} - {{ current_membership.account.name }}";
+        {% elif user %}
+        var user_email = "{{ user.email }}";
+        var user_name = "{{ user.email }}";
+        {% else %}
+        var user_email = "";
+        var user_name = "";
+        {% endif %}
+
+        // ZoHo does not like special symbols? ^(O_O)^
+        user_name = user_name.replace('/[@\.A-Za-z\s0-9_\-]/g', '');
+
+        if (user_name && user_email) {
+            setTimeout(function(){
+                $('#zsfeedbackwidgetdiv #feedbNameTxtField').val(user_name);
+                $('#zsfeedbackwidgetdiv #feedbEmailTxtField').val(user_email);
+            }, 3000);
+        }
+
+    }
+</script>
+{% else %}
+<!-- no ZoHo -->
+{% endif %}
